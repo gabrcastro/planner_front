@@ -15,6 +15,14 @@ export default {
       },
       backgroundImage: {
         pattern: 'url(/bg.png)'
+      },
+      backgroundColor: {
+        primary: "#f6b26b",
+        primaryHover: "#e69138",
+      },
+      textColor: {
+        primary: "#f6b26b",
+        primaryDark: "#572c00"
       }
     },
   },
