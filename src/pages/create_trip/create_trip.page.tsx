@@ -13,7 +13,7 @@ export function CreateTripPage() {
   const [isGuestsInputOpen, setIsGuestsInputOpen] = useState(false);
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false);
   const [isConfirmTripModalOpen, setIsConfirmTripModalOpen] = useState(false);
-  const [emailsToInvite, setEmailsToInvite] = useState([]);
+  const [emailsToInvite, setEmailsToInvite] = useState<string[]>([]);
 
   const [destination, setDestination] = useState("");
   const [ownerName, setOwnerName] = useState("");
@@ -50,19 +50,20 @@ export function CreateTripPage() {
     event.preventDefault();
 
     console.log(destination);
-    console.log(eventStartAndEndDates);
+    console.log(eventStartAndEndDates?.from);
+    console.log(eventStartAndEndDates?.to);
     console.log(emailsToInvite);
     console.log(ownerName);
     console.log(ownerEmail);
 
     if (!destination) return;
-    if (!eventStartAndEndDates?.from || !eventStartAndEndDates.to) return;
+    if (!eventStartAndEndDates?.from || !eventStartAndEndDates?.to) return;
     if (emailsToInvite.length === 0) return;
     if (!ownerEmail || !ownerName) return;
 
     const response = await api.post("/trips", {
       destination,
-      starts_at: eventStartAndEndDates?.from,
+      starts_at: eventStartAndEndDates.from,
       ends_at: eventStartAndEndDates.to,
       emails_to_invite: emailsToInvite,
       owner_name: ownerName,
@@ -71,7 +72,7 @@ export function CreateTripPage() {
 
     const { tripId } = response.data;
 
-    navigate(`/trip/${tripId}`);
+    navigate(`/trips/${tripId}`);
   }
 
   function addNewEmailToInvite(event: FormEvent<HTMLFormElement>) {

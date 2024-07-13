@@ -7,7 +7,7 @@ import { TripDetailsPage } from './pages/trip_details/trip_details.page';
 
 const router = createBrowserRouter([
   { path: "/", element: <CreateTripPage />},
-  { path: "/trip/:tripId", element: <TripDetailsPage />}
+  { path: "/trips/:tripId", element: <TripDetailsPage />}
 ])
 
 export function App() {
