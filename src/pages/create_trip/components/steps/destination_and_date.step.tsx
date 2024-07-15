@@ -1,5 +1,5 @@
 import { ArrowRight, Calendar, MapPin, Settings2, X } from "lucide-react";
-import { ButtonComponent } from "../../../../components/button.component";
+import { ButtonComponent } from "../../../../components/button/button.component";
 import { useState } from "react";
 import { DateRange, DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
@@ -89,7 +89,7 @@ export function DestinationAndDateStep({
           <Settings2 className="size-5" />
         </ButtonComponent>
       ) : (
-        <ButtonComponent onClick={openGuestsInput}>
+        <ButtonComponent data-testid={'continue_button'} onClick={openGuestsInput}>
           Continuar
           <ArrowRight className="size-5 " />
         </ButtonComponent>

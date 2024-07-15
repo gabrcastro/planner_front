@@ -1,73 +1,55 @@
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { InviteGuestsModalComponent } from "./components/invite_guests_modal.component.";
 import { ConfirmTripModalComponent } from "./components/confirm_trip_modal.component";
 import { DestinationAndDateStep } from "./components/steps/destination_and_date.step";
 import { InviteGuestsStep } from "./components/steps/invite_guests.step";
-import { DateRange } from "react-day-picker";
 import { api } from "../../lib/axios";
+import { useCreateTripStore } from "./create_trip.store";
 
 export function CreateTripPage() {
   const navigate = useNavigate();
-
-  const [isGuestsInputOpen, setIsGuestsInputOpen] = useState(false);
-  const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false);
-  const [isConfirmTripModalOpen, setIsConfirmTripModalOpen] = useState(false);
-  const [emailsToInvite, setEmailsToInvite] = useState<string[]>([]);
-
-  const [destination, setDestination] = useState("");
-  const [ownerName, setOwnerName] = useState("");
-  const [ownerEmail, setOwnerEmail] = useState("");
-  const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
-    DateRange | undefined
-  >();
+  const store = useCreateTripStore()
 
   function openGuestsInput() {
-    setIsGuestsInputOpen(true);
+    store.setIsGuestsInputOpen(true);
   }
 
   function closeGuestsInput() {
-    setIsGuestsInputOpen(false);
+    store.setIsGuestsInputOpen(false);
   }
 
   function openGuestsModal() {
-    setIsGuestsModalOpen(true);
+    store.setIsGuestsModalOpen(true);
   }
 
   function closeGuestsModal() {
-    setIsGuestsModalOpen(false);
+    store.setIsGuestsModalOpen(false);
   }
 
   function openConfirmTripModal() {
-    setIsConfirmTripModalOpen(true);
+    store.setIsConfirmTripModalOpen(true);
   }
 
   function closeConfirmTripModal() {
-    setIsConfirmTripModalOpen(false);
+    store.setIsConfirmTripModalOpen(false);
   }
 
   async function createTrip(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    console.log(destination);
-    console.log(eventStartAndEndDates?.from);
-    console.log(eventStartAndEndDates?.to);
-    console.log(emailsToInvite);
-    console.log(ownerName);
-    console.log(ownerEmail);
-
-    if (!destination) return;
-    if (!eventStartAndEndDates?.from || !eventStartAndEndDates?.to) return;
-    if (emailsToInvite.length === 0) return;
-    if (!ownerEmail || !ownerName) return;
+    if (!store.destination) return;
+    if (!store.eventStartAndEndDates?.from || !store.eventStartAndEndDates?.to) return;
+    if (store.emailsToInvite.length === 0) return;
+    if (!store.ownerEmail || !store.ownerName) return;
 
     const response = await api.post("/trips", {
-      destination,
-      starts_at: eventStartAndEndDates.from,
-      ends_at: eventStartAndEndDates.to,
-      emails_to_invite: emailsToInvite,
-      owner_name: ownerName,
-      owner_email: ownerEmail,
+      destination: store.destination,
+      starts_at: store.eventStartAndEndDates.from,
+      ends_at: store.eventStartAndEndDates.to,
+      emails_to_invite: store.emailsToInvite,
+      owner_name: store.ownerName,
+      owner_email: store.ownerEmail,
     });
 
     const { tripId } = response.data;
@@ -82,18 +64,18 @@ export function CreateTripPage() {
     const email = data.get("guest_email")?.toString();
 
     if (!email) return;
-    if (emailsToInvite.includes(email)) return;
+    if (store.emailsToInvite.includes(email)) return;
 
-    setEmailsToInvite([...emailsToInvite, email]);
+    store.setEmailsToInvite([...store.emailsToInvite, email]);
 
     event.currentTarget.reset();
   }
 
   function removeEmailFromInvites(emailToRemove: string) {
-    const newEmailList = emailsToInvite.filter(
+    const newEmailList = store.emailsToInvite.filter(
       (email) => email !== emailToRemove
     );
-    setEmailsToInvite(newEmailList);
+    store.setEmailsToInvite(newEmailList);
   }
 
   return (
@@ -110,15 +92,15 @@ export function CreateTripPage() {
           <DestinationAndDateStep
             closeGuestsInput={closeGuestsInput}
             openGuestsInput={openGuestsInput}
-            isGuestsInputOpen={isGuestsInputOpen}
-            setDestination={setDestination}
-            setEventStartAndEndDates={setEventStartAndEndDates}
-            eventStartAndEndDates={eventStartAndEndDates}
+            isGuestsInputOpen={store.isGuestsInputOpen}
+            setDestination={store.setDestination}
+            setEventStartAndEndDates={store.setEventStartAndEndDates}
+            eventStartAndEndDates={store.eventStartAndEndDates}
           />
 
-          {isGuestsInputOpen && (
+          {store.isGuestsInputOpen && (
             <InviteGuestsStep
-              emailsToInvite={emailsToInvite}
+              emailsToInvite={store.emailsToInvite}
               openConfirmTripModal={openConfirmTripModal}
               openGuestsModal={openGuestsModal}
             />
@@ -138,21 +120,21 @@ export function CreateTripPage() {
         </p>
       </div>
 
-      {isGuestsModalOpen && (
+      {store.isGuestsModalOpen && (
         <InviteGuestsModalComponent
-          emailsToInvite={emailsToInvite}
+          emailsToInvite={store.emailsToInvite}
           addNewEmailToInvite={addNewEmailToInvite}
           closeGuestsModal={closeGuestsModal}
           removeEmailFromInvites={removeEmailFromInvites}
         />
       )}
 
-      {isConfirmTripModalOpen && (
+      {store.isConfirmTripModalOpen && (
         <ConfirmTripModalComponent
           closeConfirmTripModal={closeConfirmTripModal}
           createTrip={createTrip}
-          setOwnerName={setOwnerName}
-          setOwnerEmail={setOwnerEmail}
+          setOwnerName={store.setOwnerName}
+          setOwnerEmail={store.setOwnerEmail}
         />
       )}
     </div>

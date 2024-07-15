@@ -1,5 +1,5 @@
 import { Calendar, Tag, X } from "lucide-react";
-import { ButtonComponent } from "../../../components/button.component";
+import { ButtonComponent } from "../../../components/button/button.component";
 import { FormEvent } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../../lib/axios";
