@@ -89,7 +89,7 @@ export function DestinationAndDateStep({
           <Settings2 className="size-5" />
         </ButtonComponent>
       ) : (
-        <ButtonComponent onClick={openGuestsInput}>
+        <ButtonComponent data-testid={'continue_button'} onClick={openGuestsInput}>
           Continuar
           <ArrowRight className="size-5 " />
         </ButtonComponent>

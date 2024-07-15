@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import '@testing-library/jest-dom';
 import { ButtonComponent } from "../../src/components/button/button.component";
 
-describe("button should be rendered", () => {
+describe("Button Component", () => {
   it("renders a button with the primary variant and correct class", () => {
     render(<ButtonComponent>Ok</ButtonComponent>);
     const button = screen.getByText("Ok");
